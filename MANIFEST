@@ -4,4 +4,5 @@ MANIFEST
 LICENSE
 README
 t/00-load.t
+t/10-fail-correctly.t
 lib/Module/Case.pm
