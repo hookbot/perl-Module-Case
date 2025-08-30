@@ -1,8 +1,7 @@
-Case.xs
 Changes
 Makefile.PL
 MANIFEST
-ppport.h
+LICENSE
 README
-t/Module-Case.t
+t/00-load.t
 lib/Module/Case.pm
