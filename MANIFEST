@@ -1,0 +1,8 @@
+Case.xs
+Changes
+Makefile.PL
+MANIFEST
+ppport.h
+README
+t/Module-Case.t
+lib/Module/Case.pm
