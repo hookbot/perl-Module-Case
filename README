@@ -1,16 +1,15 @@
-Module-Case version 0.01
-========================
+README
+======
 
-The README is used to introduce the module and provide instructions on
-how to install the module, any machine dependencies it may have (for
-example C compilers and installed libraries) and any other information
-that should be provided before the module is installed.
-
-A README file is required for CPAN modules since CPAN extracts the
-README file from a module distribution so that people browsing the
-archive can use it get an idea of the modules uses. It is usually a
-good idea to provide version information here so that people can
-decide whether fixes for the module are worth downloading.
+This module was created to alleviate the problems caused by
+case-insensitive operating systems or file systems such as
+Windows or OSX when attempting to load a module that doesn't
+exactly match the case.
+This is especially troublesome when there are two different
+modules within the @INC that are case-insensitively similar.
+Using this module can force a module to load ONLY if the case
+matches exactly just as if the file system containing the
+module were case-sensitive.
 
 INSTALLATION
 
@@ -23,18 +22,12 @@ To install this module type the following:
 
 DEPENDENCIES
 
-This module requires these other modules and libraries:
+No dependencies!
 
-  blah blah blah
+COPYRIGHT
 
-COPYRIGHT AND LICENCE
+Copyright (C) 2025 by Rob Brown <bbb@cpan.org>
 
-Put the correct copyright and licence information here.
+LICENSE
 
-Copyright (C) 2025 by Rob Brown
-
-This library is free software; you can redistribute it and/or modify
-it under the same terms as Perl itself, either Perl version 5.34.1 or,
-at your option, any later version of Perl 5 you may have available.
-
-
+MIT License
