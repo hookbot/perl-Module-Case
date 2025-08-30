@@ -1,0 +1,6 @@
+Makefile
+META.*
+MYMETA.*
+*tar*
+*blib
+*old
