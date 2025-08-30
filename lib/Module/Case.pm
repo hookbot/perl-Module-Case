@@ -63,7 +63,7 @@ our $inc_sniffer = sub {
     if ($found_wrong_case) {
         # Found a case insensitive match but did NOT find an exact match.
         # We need to block Perl from continuing along @INC or else it will find the bad guy too.
-        die "Can't locate $filename in @INC except for decoy with wrong case: $found_wrong_case\n";
+        die "Can't locate $filename in \@INC except for decoy with wrong case [$found_wrong_case]\n";
     }
     # Can't even find a case-insensitive match, so just continue and let Perl try
     return undef;
