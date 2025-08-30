@@ -108,7 +108,23 @@ Module::Case - Case sensitive module loading.
 
 =head1 DESCRIPTION
 
-This is really only useful on Operating Systems that support case-insensitive filesystems.
+This module was created to alleviate the problems caused by
+case-ignorant or case-insensitive file systems or operating
+systems such as Windows or OSX when attempting to load a
+module that doesn't exactly match the case.
+
+This is especially troublesome when there are two different
+modules within the @INC that are case-insensitively similar.
+It becomes very difficult to load the one that comes later in
+the @INC because it will always get snagged on the first one.
+
+Using this module can force a module to load ONLY if the case
+matches exactly, just as if the file system containing the
+module were case-sensitive.
+
+Module::Case is efficient enough to run in production.
+
+=head1 IMPLEMENTATION
 
 This modules injects a special CODEREF at the beginning of @INC that
 performs a pre-check on each matching file within @INC to ensure the
@@ -117,7 +133,7 @@ any file that smells like the module wishing to load.
 
 If the specified module doesn't exactly match the case of how it was
 requested, then the "require" or "use" will die with an error
-instead of gleefully loading any module case-insensitively matched.
+instead of gleefully loading any case-insensitively matching module.
 
 =head1 CAVEATS
 
@@ -142,10 +158,10 @@ to specify ALL of these variations in the import line, such as:
     use Cwd;
 
 This is because once a case-sensitive module is loaded successfully,
-then it is immediately removed from the import whitelist.
-Technically, you only need to specify the module that is latest in
-the @INC, but if this order ever changes in the future, then it will
-incorrectly load the FIRST case-insensitive match in @INC.
+then it is immediately removed from the import whitelist. Technically,
+you only need to specify the module that isn't matched first in the
+@INC, but if this order ever changes in the future, then it will
+still incorrectly load the FIRST case-insensitive match in @INC.
 
 =head1 AUTHOR
 
@@ -153,7 +169,8 @@ Rob Brown <bbb@cpan.org>
 
 =head1 SEE ALSO
 
-Similar to Acme::require::case except this doesn't require any
-dependencies and it's quite fast.
+Similar behavior to Acme::require::case but using an alternate
+implementation which makes Module::Case quite fast and
+Module::Case doesn't require any dependencies.
 
 =cut
