@@ -1,3 +1,4 @@
+#!perl
 
 use strict;
 use warnings;
@@ -5,19 +6,15 @@ use warnings;
 BEGIN {
     if (eval { require tEsT::mOrE }) {
         # Yey! This is very likely to be a case-insensitive file system
-        import Test::More;
+        import Test::More tests => 10;
+        my $f = $INC{"Test/More.pm"} = delete $INC{"tEsT/mOrE.pm"};
+        ok($f, "Case-ignorant file system detected");
+        ok($INC{"Test/More.pm"}, "Test::More loaded with munged case: $f");
     }
     else {
-         print "1..0 # SKIP Smells like case-sensitive file system so not a valid test.\n";
+         print "1..0 # SKIP Smells like case-sensitive file system so not a valid test: $^O\n";
          exit;
     }
-}
-
-BEGIN {
-    plan tests => 10;
-    my $f = $INC{"Test/More.pm"} = delete $INC{"tEsT/mOrE.pm"};
-    ok($f, "Case-ignorant file system detected");
-    ok($INC{"Test/More.pm"}, "Test::More loaded with munged case: $f");
 }
 
 use Module::Case qw(cwD Cwd);
