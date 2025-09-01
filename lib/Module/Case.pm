@@ -42,7 +42,7 @@ our $inc_sniffer = sub {
     foreach my $dir (grep { !ref $_ } @scan) {
         if (open my $fh, "<", "$dir/$filename") {
             # Found a matching file but might not have same case.
-            # Take a quick peek to packe sure the case matches too.
+            # Take a quick peek to make sure the case matches too.
             my $contents = join "", <$fh>;
             if ($contents =~ /^\s*package\s+\Q$pkg\E\s*;/m) {
                  # Smells like a pretty good package.
