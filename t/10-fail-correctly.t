@@ -6,7 +6,7 @@ use warnings;
 BEGIN {
     if (eval { require tEsT::mOrE }) {
         # Yey! This is very likely to be a case-insensitive file system
-        import Test::More tests => 10;
+        import Test::More tests => 13;
         my $f = $INC{"Test/More.pm"} = delete $INC{"tEsT/mOrE.pm"};
         ok($f, "Case-ignorant file system detected");
         ok($INC{"Test/More.pm"}, "Test::More loaded with munged case: $f");
@@ -17,10 +17,16 @@ BEGIN {
     }
 }
 
-use Module::Case qw(cwD Cwd);
+use Module::Case qw(No::Such::Module cwD Cwd);
 ok(1, "Module::Case used and imported with flagged modules");
 
 my $why = "";
+
+ok(!eval { require No::Such::Module }, "No::Such::Module: Non-existent module correctly fails still");
+chomp($why = $@);
+ok($why, "Reason: $why");
+ok(!$INC{"No/Such/Module.pm"}, "No::Such::Module never loaded");
+
 ok(!eval { require cwD }, "cwD: correctly fails even on case-ignorant file system");
 chomp($why = $@);
 ok($why, "Reason: $why");
