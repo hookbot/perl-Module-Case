@@ -6,7 +6,7 @@ use warnings;
 BEGIN {
     if (eval { require tEsT::mOrE }) {
         # Yey! This is very likely to be a case-insensitive file system
-        import Test::More tests => 36;
+        import Test::More tests => 40;
         my $f = $INC{"Test/More.pm"} = delete $INC{"tEsT/mOrE.pm"};
         ok($f, "Case-ignorant file system detected");
         ok($INC{"Test/More.pm"}, "Test::More loaded with munged case: $f");
@@ -86,3 +86,9 @@ chomp($why = $@);
 ok(!$why, "Cwd no error $why");
 ok($INC{"Cwd.pm"}, "Cwd loaded correctly");
 ok(defined &Cwd::cwd, "Cwd created symbols correctly");
+
+ok(!$INC{"cWD.pm"}, "cWD not loaded yet");
+ok(!eval { require cWD }, "cWD: correctly fails even on case-ignorant file system");
+chomp($why = $@);
+ok($why, "cWD Reason: $why");
+ok(!$INC{"cWD.pm"}, "cWD never loaded");
