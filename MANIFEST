@@ -6,5 +6,6 @@ README
 t/00-load.t
 t/05-ignorant-load.t
 t/10-fail-correctly.t
+t/11-fail-last.t
 t/15-unimport.t
 lib/Module/Case.pm
