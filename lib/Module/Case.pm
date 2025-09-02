@@ -20,19 +20,15 @@ our $inc_sniffer = sub {
     $pkg =~ s{/+}{::}g;
     # For efficiency purposes, skip module unless it's one of the special case sensitive packages flagged to load case-sensitively.
     $sensitive_modules->{$pkg} or return undef;
-    __PACKAGE__->unimport($pkg);
 
     # Skip the directories before me since they've already been tried (and obviously didn't find the file already or else we wouldn't be here)
     my $keep = 0;
     # Only look through regular directories after myself but ignore CODEREFs (such as myself) in @INC
     my @scan = grep { $keep = 1 if $_ eq $self; !ref $_ and $keep; } @INC;
-    if (!keys %$sensitive_modules) {
-        # If this was the last sensitive module, restore @INC without me
-        $sensitive_modules = undef;
-        @INC = grep { $_ ne $self } @INC;
-    }
+    # Now that @scan has been built, it's safe to disable $pkg from the list.
+    __PACKAGE__->unimport($pkg);
     my $found_wrong_case = 0;
-    foreach my $dir (grep { !ref $_ } @scan) {
+    foreach my $dir (@scan) {
         if (open my $fh, "<", "$dir/$filename") {
             # Found a matching file but might not have same case.
             # Take a quick peek to make sure the case matches too.
