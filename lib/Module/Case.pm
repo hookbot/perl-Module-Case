@@ -19,9 +19,10 @@ our $inc_sniffer = sub {
     $pkg =~ s/\.pm$//;
     $pkg =~ s{/+}{::}g;
     # For efficiency purposes, skip module unless it's one of the special case sensitive packages flagged to load case-sensitively.
-    delete $sensitive_modules->{$pkg} or return undef;
+    $sensitive_modules->{$pkg} or return undef;
+    __PACKAGE__->unimport($pkg);
 
-    # Skip the directories before me since they've already been tried and obviously didn't find the file
+    # Skip the directories before me since they've already been tried (and obviously didn't find the file already or else we wouldn't be here)
     my $keep = 0;
     # Only look through regular directories after myself but ignore CODEREFs (such as myself) in @INC
     my @scan = grep { $keep = 1 if $_ eq $self; !ref $_ and $keep; } @INC;
@@ -82,6 +83,31 @@ sub import {
         }
     }
     return;
+}
+
+sub unimport {
+    my $class = shift;
+    my $wiped = undef;
+    if ($sensitive_modules) {
+        if (@_) {
+            # Pick out module(s) to quit case sniffing for
+            foreach (@_) {
+                $wiped ||= delete $sensitive_modules->{$_};
+            }
+        }
+        else {
+            # No specific module provided, so just wipe everything
+            ($wiped) = keys %$sensitive_modules;
+            $sensitive_modules = undef;
+        }
+    }
+    if (!$sensitive_modules or !keys %$sensitive_modules) {
+        # No module case-sensitive modules left, so restore @INC without the sniffer
+        $sensitive_modules = undef;
+        @INC = grep { $_ ne $inc_sniffer } @INC;
+    }
+    # Return one of the modules that got wiped, if any.
+    return $wiped;
 }
 
 1;
