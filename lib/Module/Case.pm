@@ -70,12 +70,16 @@ sub import {
         # Autovivify $sensitive_modules only as needed
         $sensitive_modules->{$_} = $_;
     }
-    if (keys %$sensitive_modules) {
+    if (keys %$sensitive_modules and !grep { $_ eq $inc_sniffer } @INC) {
         # Only inject the sniffer if there is something to smell
         # and only if it's not already in the list.
-        if (!grep { $_ eq $inc_sniffer } @INC) {
-            # If $inc_sniffer not in the list, run it first.
-            unshift @INC, $inc_sniffer;
+        # Search for the first regular directory (non-ref string) @INC setting
+        # Then jam the $inc_sniffer right before it.
+        for (my $i = 0; $i < @INC; $i++) {
+            if (!ref $INC[$i]) {
+                splice @INC, $i, 0, $inc_sniffer;
+                last;
+            }
         }
     }
     return;
