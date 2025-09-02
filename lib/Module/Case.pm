@@ -8,14 +8,6 @@ our $VERSION = '0.04';
 
 our $sensitive_modules;
 
-sub import {
-    my $class = shift;
-    foreach (@_) {
-        $sensitive_modules->{$_} = $_;
-    }
-    return;
-}
-
 our $inc_sniffer = sub {
     # Special @INC hook to only load modules with exact case match.
     # This is particularly useful on case insensitive file systems.
@@ -75,11 +67,21 @@ our $inc_sniffer = sub {
     return undef;
 };
 
-our $already_injected;
-if (!$already_injected++) {
-    # Never injected into @INC yet
-    unshift @INC, $inc_sniffer;
-    $sensitive_modules ||= {};
+sub import {
+    my $class = shift;
+    foreach (@_) {
+        # Autovivify $sensitive_modules only as needed
+        $sensitive_modules->{$_} = $_;
+    }
+    if (keys %$sensitive_modules) {
+        # Only inject the sniffer if there is something to smell
+        # and only if it's not already in the list.
+        if (!grep { $_ eq $inc_sniffer } @INC) {
+            # If $inc_sniffer not in the list, run it first.
+            unshift @INC, $inc_sniffer;
+        }
+    }
+    return;
 }
 
 1;
