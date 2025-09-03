@@ -64,7 +64,7 @@ our $inc_sniffer = sub {
     return undef;
 };
 
-sub import {
+our $sub_import = sub {
     my $class = shift;
     foreach (@_) {
         # Autovivify $sensitive_modules only as needed
@@ -83,9 +83,9 @@ sub import {
         }
     }
     return;
-}
+};
 
-sub unimport {
+my $sub_unimport = sub {
     my $class = shift;
     my $wiped = undef;
     if ($sensitive_modules) {
@@ -108,6 +108,13 @@ sub unimport {
     }
     # Return one of the modules that got wiped, if any.
     return $wiped;
+};
+
+{
+    no strict 'refs';
+    my $should_pkg = __PACKAGE__;
+    defined &{"$should_pkg\::import"}   or *{"$should_pkg\::import"}   = $sub_import;
+    defined &{"$should_pkg\::unimport"} or *{"$should_pkg\::unimport"} = $sub_unimport;
 }
 
 1;
