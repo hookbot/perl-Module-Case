@@ -19,7 +19,7 @@ our $inc_sniffer = sub {
     $pkg =~ s/\.pm$//;
     $pkg =~ s{/+}{::}g;
     # For efficiency purposes, skip module unless it's one of the special case sensitive packages flagged to load case-sensitively.
-    $sensitive_modules->{$pkg} or return undef;
+    $sensitive_modules->{$pkg} or $sensitive_modules->{'-all'} or return undef;
 
     # Skip the directories before me since they've already been tried (and obviously didn't find the file already or else we wouldn't be here)
     my $keep = 0;
@@ -153,6 +153,9 @@ Module::Case - Case sensitive module loading.
 
     # Now load only the lowercase file
     use config;
+
+    # Or to enforce all modules to be case-sensitive
+    use Module::Case '-all';
 
 =head1 DESCRIPTION
 
