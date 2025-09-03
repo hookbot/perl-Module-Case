@@ -115,6 +115,19 @@ my $sub_unimport = sub {
     my $should_pkg = __PACKAGE__;
     defined &{"$should_pkg\::import"}   or *{"$should_pkg\::import"}   = $sub_import;
     defined &{"$should_pkg\::unimport"} or *{"$should_pkg\::unimport"} = $sub_unimport;
+    (my $should_file = "$should_pkg.pm") =~ s%::%/%g;
+    if (__FILE__ !~ m{\b\Q$should_file\E$} and
+        __FILE__ =~ m{\b(\Q$should_file\E)$}i) {
+        my $fake_file = $1;
+        my $fake_pkg = $fake_file;
+        $fake_pkg =~ s%/+%::%g;
+        $fake_pkg =~ s/\.pm//;
+        #if (eval { require Carp }) { Carp::carp("Case-ignorant filesystem exploited by loading module wrongly: $fake_pkg"); }
+        defined &{"$fake_pkg\::import"}   or *{"$fake_pkg\::import"}   = *{"$should_pkg\::import"};
+        defined &{"$fake_pkg\::unimport"} or *{"$fake_pkg\::unimport"} = *{"$should_pkg\::unimport"};
+        # Fake Preload Real Module
+        $INC{$should_file} = __FILE__;
+    }
 }
 
 1;
