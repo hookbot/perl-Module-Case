@@ -181,7 +181,7 @@ any file that smells like the module wishing to load.
 
 If the specified module doesn't exactly match the case of how it was
 requested, then the "require" or "use" will die with an error
-instead of gleefully loading any case-insensitively matching module.
+instead of gleefully loading any file matching case-insensitively.
 
 =head1 CAVEATS
 
@@ -195,7 +195,7 @@ matching what has been flagged for sensitively. For example:
 
 Then the contents of "Exact/Module/Name.pm" must contain
 "package Exact::Module::Name" somewhere in the pm file
-or else it should fail to load.
+or else it will fail to load.
 
 If there are multiple different modules that match case-insensitvely
 and you wish to load more than one of these, then it would be safer
